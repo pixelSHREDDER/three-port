@@ -1123,6 +1123,11 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
+"@pmndrs/cannon-worker-api@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/@pmndrs/cannon-worker-api/-/cannon-worker-api-2.3.2.tgz"
+  integrity sha512-+4YGTH7XfSvUYUa65LoltcDMRLu3lr7rFtHT9dmeCeu2JJ7Zg2xBFJ5wiWSJmcM1ECh2R0YDcROdEQ1JKpOgFA==
+
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
   resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.21.tgz"
@@ -1373,6 +1378,15 @@
   resolved "https://registry.npmjs.org/@react-spring/types/-/types-9.6.1.tgz"
   integrity sha512-POu8Mk0hIU3lRXB3bGIGe4VHIwwDsQyoD1F394OK7STTiX9w4dG3cTLljjYswkQN+hDSHRrj4O36kuVa7KPU8Q==
 
+"@react-three/cannon@^6.5.2":
+  version "6.5.2"
+  resolved "https://registry.npmjs.org/@react-three/cannon/-/cannon-6.5.2.tgz"
+  integrity sha512-d7qH2XMVtHRkCaMUWpLkWSD9JPiE570gy8LoP7WBw+Ui+hI9ZiFx9HDaX5+Y6wzbGJd1WvELWaG9O0cOtk2rmw==
+  dependencies:
+    "@pmndrs/cannon-worker-api" "^2.3.2"
+    cannon-es "^0.20.0"
+    cannon-es-debugger "^1.0.0"
+
 "@react-three/drei@^9.56.5":
   version "9.56.27"
   resolved "https://registry.npmjs.org/@react-three/drei/-/drei-9.56.27.tgz"
@@ -1399,7 +1413,7 @@
     utility-types "^3.10.0"
     zustand "^3.5.13"
 
-"@react-three/fiber@^8.10.1", "@react-three/fiber@>=6.0", "@react-three/fiber@>=8.0":
+"@react-three/fiber@^8.10.1", "@react-three/fiber@>=6.0", "@react-three/fiber@>=8", "@react-three/fiber@>=8.0":
   version "8.11.5"
   resolved "https://registry.npmjs.org/@react-three/fiber/-/fiber-8.11.5.tgz"
   integrity sha512-Z+/hNPDy71q7xiGQQwngpLhoyjqPsuObs/Wbk2nYDZ0SC6rg3nCQBcIR6cf1+ONx1EP53L5lbuxcr+chkdGGmQ==
@@ -2182,6 +2196,16 @@ caniuse-lite@^1.0.30001406, caniuse-lite@^1.0.30001426, caniuse-lite@^1.0.300014
   version "1.0.30001458"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001458.tgz"
   integrity sha512-lQ1VlUUq5q9ro9X+5gOEyH7i3vm+AYVT1WDCVB69XOZ17KZRhnZ9J0Sqz7wTHQaLBJccNCHq8/Ww5LlOIZbB0w==
+
+cannon-es-debugger@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/cannon-es-debugger/-/cannon-es-debugger-1.0.0.tgz"
+  integrity sha512-sE9lDOBAYFKlh+0w+cvWKwUhJef8HYnUSVPWPL0jD15MAuVRQKno4QYZSGxgOoJkMR3mQqxL4bxys2b3RSWH8g==
+
+cannon-es@^0.20.0, cannon-es@0.x:
+  version "0.20.0"
+  resolved "https://registry.npmjs.org/cannon-es/-/cannon-es-0.20.0.tgz"
+  integrity sha512-eZhWTZIkFOnMAJOgfXJa9+b3kVlvG+FX4mdkpePev/w/rP5V8NRquGyEozcjPfEoXUlb+p7d9SUcmDSn14prOA==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -4658,7 +4682,14 @@ react-composer@^5.0.3:
   dependencies:
     prop-types "^15.6.0"
 
-"react-dom@^16.8 || ^17.0", react-dom@^18.2.0, "react-dom@>= 16.8.0", react-dom@>=16.13, react-dom@>=16.8.0, react-dom@>=18.0:
+react-device-detect@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.npmjs.org/react-device-detect/-/react-device-detect-2.2.3.tgz"
+  integrity sha512-buYY3qrCnQVlIFHrC5UcUoAj7iANs/+srdkwsnNjI7anr3Tt7UY6MqNxtMLlr0tMBied0O49UZVK8XKs3ZIiPw==
+  dependencies:
+    ua-parser-js "^1.0.33"
+
+"react-dom@^16.8 || ^17.0", react-dom@^18.2.0, "react-dom@>= 0.14.0", "react-dom@>= 16.8.0", react-dom@>=16.13, react-dom@>=16.8.0, react-dom@>=18.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -4710,7 +4741,7 @@ react-use-measure@^2.1.1:
   dependencies:
     debounce "^1.2.1"
 
-"react@^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", react@^18.0.0, react@^18.2.0, "react@>= 16.3.0", "react@>= 16.8", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=16.13, react@>=16.8, react@>=16.8.0, react@>=17.0, react@>=18.0:
+"react@^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", react@^18.0.0, react@^18.2.0, "react@>= 0.14.0", "react@>= 16.3.0", "react@>= 16.8", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=16.13, react@>=16.8, react@>=16.8.0, react@>=17.0, react@>=18, react@>=18.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -5366,7 +5397,7 @@ three-stdlib@^2.21.6, three-stdlib@^2.21.8:
     potpack "^1.0.1"
     zstddec "^0.0.2"
 
-three@^0.149.0, "three@>= 0.123.0", three@>=0.122.0, three@>=0.125.0, three@>=0.126, three@>=0.126.1, three@>=0.133, three@>=0.137, three@>=0.144.0:
+three@^0.149.0, "three@>= 0.123.0", three@>=0.122.0, three@>=0.125.0, three@>=0.126, three@>=0.126.1, three@>=0.133, three@>=0.137, three@>=0.139, three@>=0.144.0, three@0.x:
   version "0.149.0"
   resolved "https://registry.npmjs.org/three/-/three-0.149.0.tgz"
   integrity sha512-tohpUxPDht0qExRLDTM8sjRLc5d9STURNrdnK3w9A+V4pxaTBfKWWT/IqtiLfg23Vfc3Z+ImNfvRw1/0CtxrkQ==
@@ -5509,10 +5540,15 @@ typedarray@^0.0.6:
   resolved "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^5.0.2, "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta", typescript@>=3.3.1:
+typescript@^5.0.2, "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta", typescript@>=3.3.1, typescript@>=3.8:
   version "5.0.2"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.0.2.tgz"
   integrity sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==
+
+ua-parser-js@^1.0.33:
+  version "1.0.34"
+  resolved "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-1.0.34.tgz"
+  integrity sha512-K9mwJm/DaB6mRLZfw6q8IMXipcrmuT6yfhYmwhAkuh+81sChuYstYA+znlgaflUPaYUa3odxKPKGw6Vw/lANew==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"
