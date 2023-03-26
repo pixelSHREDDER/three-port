@@ -8,12 +8,13 @@ export default function ControlMethodsChooser() {
   const controlMethods = useContext(ControlMethodsContext);
 
   if (!controlMethods.waitingForInput) {
-    return (
-      <>
-          {!!controlMethods.mouse &&
-              <PointerLockControls />
-          }
-      </>
-    );
+    if (!!controlMethods.mouse) {
+      return (
+        <>
+          {/* @ts-ignore */}
+          <PointerLockControls />
+        </>
+      );
+    }
   }
 }

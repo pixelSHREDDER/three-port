@@ -31,7 +31,7 @@ export default function Player(props: SphereProps) {
     api.velocity.set(direction.x, velocity.current[1], direction.z);
   });
 
-  useEffect(() => api.velocity.subscribe((v) => (velocity.current = v)), []);
+  useEffect(() => api.velocity.subscribe((v) => (velocity.current = v)), [api.velocity]);
 
   return (
     <group>

@@ -109,7 +109,7 @@ export default function useControlMethods() {
       window.removeEventListener('mousemove', onMouseDetected);
       window.removeEventListener('ontouchstart', onTouchDetected);
     }
-  }, []);
+  }, [onAccelerometerDetected, onGamepadDetected, onKeyboardDetected, onMouseDetected, onTouchDetected]);
 
   return {
     accelerometer,
