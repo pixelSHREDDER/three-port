@@ -51,10 +51,10 @@ export default function Player(props: SphereProps) {
     camera.rotateOnWorldAxis(lookVector, Number(gamepad.rightStickX));
   };
 
-  useEffect(() => gamepadFrame(), [gamepad]);
-  useEffect(() => keyboardFrame(), [forward, backward, left, right]);
+  useEffect(() => gamepadFrame(), [gamepad, gamepadFrame]);
+  useEffect(() => keyboardFrame(), [forward, backward, left, right, keyboardFrame]);
   useEffect(() => api.velocity.subscribe((v) => (velocity.current = v)), [api.velocity]);
-  useEffect(() => { camera.rotation.order = 'YXZ';  }, []);
+  useEffect(() => { camera.rotation.order = 'YXZ';  }, [camera.rotation]);
 
   return (
     <group>
