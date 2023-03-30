@@ -18,7 +18,8 @@ interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
 
 export interface IControlMethods {
   accelerometer: Boolean,
-  gamepad: Boolean,
+  //gamepad: Boolean,
+  activeGamepad: number | undefined,
   keyboard: Boolean,
   mouse: Boolean,
   touch: Boolean,
@@ -27,7 +28,9 @@ export interface IControlMethods {
 
 export default function useControlMethods() {
   const [accelerometer, setAccelerometer] = useState(false);
-  const [gamepad, setGamepad] = useState(false);
+  //const [gamepad, setGamepad] = useState(false);
+  const [activeGamepad, setActiveGamepad] = useState<number | undefined>();
+  const [connectedGamepads, setConnectedGamepads] = useState<number[]>([]);
   const [keyboard, setKeyboard] = useState(true);
   const [mouse, setMouse] = useState(false);
   const [touch, setTouch] = useState(false);
@@ -46,18 +49,48 @@ export default function useControlMethods() {
 
   const onGamepadDetected = (event: GamepadEvent) => { 
     event.preventDefault();
-    document.removeEventListener('gamepadconnected', onGamepadDetected);
+    window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('mousemove', onMouseDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
-    setGamepad(true);
+    //setGamepad(true);
+    console.log(
+      'Gamepad connected at index %d: %s. %d buttons, %d axes.',
+      event.gamepad.index,
+      event.gamepad.id,
+      event.gamepad.buttons.length,
+      event.gamepad.axes.length,
+      event.gamepad
+    );
+    
+    setConnectedGamepads([
+      ...connectedGamepads,
+      event.gamepad.index
+    ]);
+    
+    if (event.gamepad.mapping === 'standard') {
+      setActiveGamepad(event.gamepad.index);
+    }
+    window.addEventListener('gamepaddisconnected', onGamepadDisconnected);
     setWaitingForInput(false);
   };
-  
+
+  const onGamepadDisconnected = (event: GamepadEvent) => {
+    console.log(
+      'Gamepad disconnected from index %d: %s',
+      event.gamepad.index,
+      event.gamepad.id
+    );
+
+    let newConnectedGamepads = [...connectedGamepads];
+    delete newConnectedGamepads[event.gamepad.index];
+    setConnectedGamepads(newConnectedGamepads);
+  };
+
   const onKeyboardDetected = (event: KeyboardEvent) => {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
-    document.removeEventListener('gamepadconnected', onGamepadDetected);
+    window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
     setKeyboard(true);
@@ -67,7 +100,7 @@ export default function useControlMethods() {
   const onMouseDetected = (event: MouseEvent) => {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
-    document.removeEventListener('gamepadconnected', onGamepadDetected);
+    window.removeEventListener('gamepadconnected', onGamepadDetected);
     window.removeEventListener('mousemove', onMouseDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
     setMouse(true);
@@ -77,7 +110,7 @@ export default function useControlMethods() {
   const onTouchDetected = (event: TouchEvent) => {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
-    document.removeEventListener('gamepadconnected', onGamepadDetected);
+    window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('mousemove', onMouseDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
@@ -104,7 +137,7 @@ export default function useControlMethods() {
 
     return () => {
       window.removeEventListener('devicemotion', onAccelerometerDetected);
-      document.removeEventListener('gamepadconnected', onGamepadDetected);
+      window.removeEventListener('gamepadconnected', onGamepadDetected);
       document.removeEventListener('keydown', onKeyboardDetected);
       window.removeEventListener('mousemove', onMouseDetected);
       window.removeEventListener('ontouchstart', onTouchDetected);
@@ -113,7 +146,8 @@ export default function useControlMethods() {
 
   return {
     accelerometer,
-    gamepad,
+    //gamepad,
+    activeGamepad,
     keyboard,
     mouse,
     touch,

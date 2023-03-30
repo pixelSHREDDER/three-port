@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const keys = { KeyW: 'forward', KeyS: 'backward', KeyA: 'left', KeyD: 'right' };
 
-export const useKeyboardControls = (enabled) => {
+export const useKeyboardControls = (enabled: Boolean) => {
   const [movement, setMovement] = useState({
     forward: false,
     backward: false,
