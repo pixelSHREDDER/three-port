@@ -17,24 +17,24 @@ interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
 }*/
 
 export interface IControlMethods {
-  accelerometer: Boolean,
-  activeGamepad: number | undefined,
-  keyboard: Boolean,
-  mouse: Boolean,
-  touch: Boolean,
-  waitingForInput: Boolean,
+  accelerometer: boolean,
+  activeGamepadIndex: number,
+  keyboard: boolean,
+  mouse: boolean,
+  touch: boolean,
+  waitingForInput: boolean,
 }
 
 export default function useControlMethods() {
   const [accelerometer, setAccelerometer] = useState(false);
-  const [activeGamepad, setActiveGamepad] = useState<number | undefined>();
+  const [activeGamepadIndex, setActiveGamepadIndex] = useState<number>(-1);
   const [connectedGamepads, setConnectedGamepads] = useState<number[]>([]);
   const [keyboard, setKeyboard] = useState(true);
   const [mouse, setMouse] = useState(false);
   const [touch, setTouch] = useState(false);
   const [waitingForInput, setWaitingForInput] = useState(() => true);
 
-  const onAccelerometerDetected = (event: DeviceMotionEvent) => {
+  const onAccelerometerDetected = useCallback((event: DeviceMotionEvent) => {
     if (Object.values(event.acceleration).some(v => v !== null)) {
       event.preventDefault();
       window.removeEventListener('devicemotion', onAccelerometerDetected);
@@ -43,9 +43,9 @@ export default function useControlMethods() {
       setAccelerometer(true);
       setWaitingForInput(false);
     }
-  }
+  }, []);
 
-  const onGamepadDetected = (event: GamepadEvent) => { 
+  const onGamepadDetected = useCallback((event: GamepadEvent) => { 
     event.preventDefault();
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
@@ -58,19 +58,19 @@ export default function useControlMethods() {
     ]);
     
     if (event.gamepad.mapping === 'standard') {
-      setActiveGamepad(event.gamepad.index);
+      setActiveGamepadIndex(event.gamepad.index);
     }
     window.addEventListener('gamepaddisconnected', onGamepadDisconnected);
     setWaitingForInput(false);
-  };
+  }, []);
 
-  const onGamepadDisconnected = (event: GamepadEvent) => {
+  const onGamepadDisconnected = useCallback((event: GamepadEvent) => {
     let newConnectedGamepads = [...connectedGamepads];
     delete newConnectedGamepads[event.gamepad.index];
     setConnectedGamepads(newConnectedGamepads);
-  };
+  }, []);
 
-  const onKeyboardDetected = (event: KeyboardEvent) => {
+  const onKeyboardDetected = useCallback((event: KeyboardEvent) => {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
@@ -78,9 +78,9 @@ export default function useControlMethods() {
     window.removeEventListener('ontouchstart', onTouchDetected);
     setKeyboard(true);
     setWaitingForInput(false);
-    };
+  }, []);
 
-  const onMouseDetected = (event: MouseEvent) => {
+  const onMouseDetected = useCallback((event: MouseEvent) => {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
@@ -88,9 +88,9 @@ export default function useControlMethods() {
     window.removeEventListener('ontouchstart', onTouchDetected);
     setMouse(true);
     setWaitingForInput(false);
-  };
+  }, []);
   
-  const onTouchDetected = (event: TouchEvent) => {
+  const onTouchDetected = useCallback((event: TouchEvent) => {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
@@ -99,15 +99,15 @@ export default function useControlMethods() {
     window.removeEventListener('ontouchstart', onTouchDetected);
     setTouch(true);
     setWaitingForInput(false);
-  };
+  }, []);
 
-const removeAllListeners = useCallback(() => {
-  window.removeEventListener('devicemotion', onAccelerometerDetected);
-  window.removeEventListener('gamepadconnected', onGamepadDetected);
-  document.removeEventListener('keydown', onKeyboardDetected);
-  window.removeEventListener('mousemove', onMouseDetected);
-  window.removeEventListener('ontouchstart', onTouchDetected);
-}, [onAccelerometerDetected, onGamepadDetected, onKeyboardDetected, onMouseDetected, onTouchDetected]);
+  const removeAllListeners = useCallback(() => {
+    window.removeEventListener('devicemotion', onAccelerometerDetected);
+    window.removeEventListener('gamepadconnected', onGamepadDetected);
+    document.removeEventListener('keydown', onKeyboardDetected);
+    window.removeEventListener('mousemove', onMouseDetected);
+    window.removeEventListener('ontouchstart', onTouchDetected);
+  }, []);
 
   useEffect(() => {
     const requestPermission = (DeviceOrientationEvent as unknown as DeviceOrientationEventiOS).requestPermission;
@@ -130,7 +130,7 @@ const removeAllListeners = useCallback(() => {
 
   return {
     accelerometer,
-    activeGamepad,
+    activeGamepadIndex,
     keyboard,
     mouse,
     touch,

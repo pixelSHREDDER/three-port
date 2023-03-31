@@ -14,7 +14,7 @@ import useControlMethods, { IControlMethods } from '../controls/useControlMethod
 
 export const ControlMethodsContext = createContext({
   accelerometer: false,
-  activeGamepad: undefined,
+  activeGamepadIndex: -1,
   keyboard: false,
   mouse: false,
   touch: false,
