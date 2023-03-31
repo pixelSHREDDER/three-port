@@ -27,6 +27,7 @@ export const useGamepadControls = (activeGamepadIndex: number) => {
     if (!activeGamepad) {
       return;
     }
+    console.log(activeGamepad.id);
     dispatch({type: 'setAllPreferences', payload: getGamepadPreferences(activeGamepad.id)});
   }, [getActiveGamepad]);
 

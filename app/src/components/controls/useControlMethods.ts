@@ -49,7 +49,7 @@ export default function useControlMethods() {
     event.preventDefault();
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
-    window.removeEventListener('mousemove', onMouseDetected);
+    window.removeEventListener('mousedown', onMouseDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
     
     setConnectedGamepads([
@@ -84,7 +84,7 @@ export default function useControlMethods() {
     event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
-    window.removeEventListener('mousemove', onMouseDetected);
+    window.removeEventListener('mousedown', onMouseDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
     setMouse(true);
     setWaitingForInput(false);
@@ -105,7 +105,7 @@ export default function useControlMethods() {
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
-    window.removeEventListener('mousemove', onMouseDetected);
+    window.removeEventListener('mousedown', onMouseDetected);
     window.removeEventListener('ontouchstart', onTouchDetected);
   }, []);
 
@@ -122,7 +122,7 @@ export default function useControlMethods() {
     }
     window.addEventListener('gamepadconnected', onGamepadDetected);
     document.addEventListener('keydown', onKeyboardDetected);
-    window.addEventListener('mousemove', onMouseDetected);
+    window.addEventListener('mousedown', onMouseDetected);
     window.addEventListener('ontouchstart', onTouchDetected);
 
     return () => removeAllListeners();

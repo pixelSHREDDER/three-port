@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import Instructions from '../components/dom/Instructions'
+import Modal from '../components/dom/Modal'
 import Item from '../components/canvas/Item'
 import React from 'react'
 
@@ -12,11 +12,13 @@ const Logo = dynamic(() => import('../components/canvas/Logo'), { ssr: false })
 // Dom components go here
 export default function Page(props) {
   return (
-    <Instructions>
-      This is a minimal starter for Nextjs + React-three-fiber and Threejs. Click on the{' '}
-      <span className='text-cyan-200'>atoms nucleus</span> to navigate to the{' '}
-      <span className='text-green-200'>/blob</span> page. OrbitControls are enabled by default.
-    </Instructions>
+    <Modal>
+      <p>
+        This is a minimal starter for Nextjs + React-three-fiber and Threejs. Click on the{' '}
+        <span className='text-cyan-200'>atoms nucleus</span> to navigate to the{' '}
+        <span className='text-green-200'>/blob</span> page. OrbitControls are enabled by default.
+      </p>
+    </Modal>
   )
 }
 

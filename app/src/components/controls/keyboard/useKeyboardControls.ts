@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { defaultKeyboardState, keyboardReducer } from './keyboardControlsReducer';
 
 export const useKeyboardControls = (enabled: boolean) => {

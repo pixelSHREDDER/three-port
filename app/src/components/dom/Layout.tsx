@@ -1,15 +1,15 @@
-import React, { ReactNode } from 'react'
-import { useRef, forwardRef, useImperativeHandle } from 'react'
+import React, { ReactNode, forwardRef, useImperativeHandle, useRef } from 'react';
 
 interface Props {
-  children?: ReactNode;
+  children?: ReactNode,
 }
+
 export type Ref = HTMLElement;
 
 const Layout = forwardRef<Ref, Props>((props, ref) => {
-  const localRef = useRef()
+  const localRef = useRef();
 
-  useImperativeHandle(ref, () => localRef.current)
+  useImperativeHandle(ref, () => localRef.current);
 
   return (
     <div
@@ -17,8 +17,9 @@ const Layout = forwardRef<Ref, Props>((props, ref) => {
       className='absolute top-0 left-0 z-10 h-screen w-screen overflow-hidden bg-zinc-900 text-gray-50'>
       {props.children}
     </div>
-  )
+  );
 })
-Layout.displayName = 'Layout'
 
-export default Layout
+Layout.displayName = 'Layout';
+
+export default Layout;

@@ -11,6 +11,8 @@ import ControlMethodsChooser from '../controls/ControlMethodsChooser';
 import Floor from './Floor';
 import Player from './Player';
 import useControlMethods, { IControlMethods } from '../controls/useControlMethods';
+import Image from 'next/image';
+import Modal from '../dom/Modal';
 
 export const ControlMethodsContext = createContext({
   accelerometer: false,
@@ -59,6 +61,23 @@ export default function Scene({ children, ...props }) {
         <Environment files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr" background />
         <BakeShadows />
       </Canvas>
+      {controlMethods.waitingForInput &&
+        <Modal>
+          <Image
+            className='display-block mx-auto'
+            height={200}
+            width={200}
+            src={'/img/gamepad.gif'}
+            alt="Move the thumbsticks on the gamepad" />
+          <span className='text-cyan-200'>OR</span>
+          <Image
+            className='display-block mx-auto'
+            height={200}
+            width={400}
+            src={'/img/keyboard-mouse.gif'}
+            alt="Press a key on the keyboard & click the mouse" />
+        </Modal>
+      }
     </ControlMethodsContext.Provider>
   )
 }
