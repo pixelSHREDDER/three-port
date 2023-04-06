@@ -9,11 +9,13 @@
 	PageUp: 'lookUp',
 };*/
 
+import { TouchEvent } from "react";
+
 export interface ITouchInputs {
-  /*lookDown: boolean,
+  lookDown: boolean,
   lookLeft: boolean,
   lookRight: boolean,
-	lookUp: boolean,*/
+	lookUp: boolean,
 	moveBackward: boolean,
 	moveForward: boolean,
 	moveLeft: boolean,
@@ -24,19 +26,19 @@ export interface ITouchState {
 	inputs: ITouchInputs,
 }
 
-type ITouchAction = | {
+export type ITouchAction = | {
 	type: 'updateOneInput',
 	payload: {
-		event: TouchEvent,
+		input: string,
 		pressed: boolean,
 	},
 }
 
 export const defaultTouchInputs: ITouchInputs = {
-	/*lookDown: false,
+	lookDown: false,
   lookLeft: false,
   lookRight: false,
-	lookUp: false,*/
+	lookUp: false,
 	moveBackward: false,
 	moveForward: false,
 	moveLeft: false,
@@ -51,7 +53,9 @@ export const touchReducer = (state: ITouchState, action: ITouchAction) => {
 	switch (action.type) {
 		case 'updateOneInput':
 			let newInputs: ITouchInputs = { ...state.inputs };
-			//newInputs[keyMappings[action.payload.event.code]] = !!action.payload.pressed ? 1 : 0;
+			if (action.payload.input in newInputs) {
+				newInputs[action.payload.input] = !!action.payload.pressed ? 1 : 0;
+			}
 			return {
 				...state,
 				inputs: newInputs,

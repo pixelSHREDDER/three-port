@@ -1,9 +1,10 @@
-import React, { createContext } from 'react';
+import React, { createContext, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
   Preload,
-  BakeShadows
+  BakeShadows,
+  Loader
 } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
 //import { useControls } from 'leva';
@@ -30,7 +31,7 @@ export default function Scene({ children, ...props }) {
     roughness: { value: 0.06, min: 0, max: 0.15, step: 0.001 },
     envMapIntensity: { value: 1, min: 0, max: 5 }
   })*/
-  const controlMethods:IControlMethods = useControlMethods();
+  const controlMethods: IControlMethods = useControlMethods();
 
   return (
     <ControlMethodsContext.Provider value={controlMethods}>
@@ -40,44 +41,54 @@ export default function Scene({ children, ...props }) {
         //dpr={[1, 1.5]}
         shadows
         camera={{ near: 0.1, far: 400, fov: 75 }}>
-        <fog attach="fog" args={['purple', 0, 130]} />
-        <ambientLight intensity={0.1} />
-        <group position={[0, 0, 0]}>
-          <spotLight castShadow intensity={10} angle={0.1} position={[-200, 220, -100]} shadow-mapSize={[2048, 2048]} shadow-bias={-0.000001} />
-          <spotLight angle={0.1} position={[-250, 120, -200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
-          <spotLight angle={0.1} position={[250, 120, 200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
-          <Physics gravity={[0, -9.8, 0]}>
-            <Player position={[0, 5, 5]} />
-            {children}
-            <Floor
-              geometry={{ args: [20, 20] }}
-              position={[0, -.1, 0]}
-              rotation={[Math.PI / -2, 0, 0]}
-              color="green" />
-          </Physics>
-        </group>
-        <Preload all />
-        <ControlMethodsChooser />
-        <Environment files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr" background />
-        <BakeShadows />
+        <Suspense fallback={null}>
+          <fog attach="fog" args={['purple', 0, 130]} />
+          <ambientLight intensity={0.1} />
+          <group position={[0, 0, 0]}>
+            <spotLight castShadow intensity={10} angle={0.1} position={[-200, 220, -100]} shadow-mapSize={[2048, 2048]} shadow-bias={-0.000001} />
+            <spotLight angle={0.1} position={[-250, 120, -200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
+            <spotLight angle={0.1} position={[250, 120, 200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
+            <Physics gravity={[0, -9.8, 0]}>
+              {/*<Player position={[0, 5, 5]} />*/}
+              {children}
+              <Floor
+                geometry={{ args: [20, 20] }}
+                position={[0, -.1, 0]}
+                rotation={[Math.PI / -2, 0, 0]}
+                color="green" />
+            </Physics>
+          </group>
+          <Preload all />
+          <ControlMethodsChooser />
+          <Environment files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr" background />
+          <BakeShadows />
+        </Suspense>
       </Canvas>
       {controlMethods.waitingForInput &&
         <Modal>
           <Image
-            className='display-block mx-auto'
+            className='flex-grow flex-shrink basis-px'
+            height={200}
+            width={200}
+            src={'/img/touch.gif'}
+            alt="Tap the screen" />
+          <span className='text-cyan-200 text-xl p-4'>OR</span>
+          <Image
+            className='flex-grow flex-shrink basis-px'
             height={200}
             width={200}
             src={'/img/gamepad.gif'}
             alt="Move the thumbsticks on the gamepad" />
-          <span className='text-cyan-200'>OR</span>
+          <span className='text-cyan-200 text-xl p-4'>OR</span>
           <Image
-            className='display-block mx-auto'
+            className='flex-grow flex-shrink basis-px'
             height={200}
             width={400}
             src={'/img/keyboard-mouse.gif'}
             alt="Press a key on the keyboard & click the mouse" />
         </Modal>
       }
+      <Loader />
     </ControlMethodsContext.Provider>
   )
 }

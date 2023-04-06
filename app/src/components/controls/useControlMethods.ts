@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
+//import { touchReducer, defaultTouchState, ITouchInputs, ITouchAction } from './touch/touchControlsReducer-old';
 /*import { BrowserTypes, getSelectorsByUserAgent } from 'react-device-detect';
 import { GetServerSideProps } from 'next'*/
 
@@ -22,6 +23,8 @@ export interface IControlMethods {
   keyboard: boolean,
   mouse: boolean,
   touch: boolean,
+  //touchDispatch?: (value: ITouchAction) => void,
+  //touchInputs: ITouchInputs,
   waitingForInput: boolean,
 }
 
@@ -33,13 +36,14 @@ export default function useControlMethods() {
   const [mouse, setMouse] = useState(false);
   const [touch, setTouch] = useState(false);
   const [waitingForInput, setWaitingForInput] = useState(() => true);
+  //const [touchInputs, touchDispatch] = useReducer(touchReducer, defaultTouchState);
 
   const onAccelerometerDetected = useCallback((event: DeviceMotionEvent) => {
     if (Object.values(event.acceleration).some(v => v !== null)) {
       event.preventDefault();
       window.removeEventListener('devicemotion', onAccelerometerDetected);
       document.removeEventListener('keydown', onKeyboardDetected);
-      window.removeEventListener('ontouchstart', onTouchDetected);
+      document.removeEventListener('touchstart', onTouchDetected);
       setAccelerometer(true);
       setWaitingForInput(false);
     }
@@ -50,7 +54,7 @@ export default function useControlMethods() {
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('mousedown', onMouseDetected);
-    window.removeEventListener('ontouchstart', onTouchDetected);
+    document.removeEventListener('touchstart', onTouchDetected);
     
     setConnectedGamepads([
       ...connectedGamepads,
@@ -75,7 +79,7 @@ export default function useControlMethods() {
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
-    window.removeEventListener('ontouchstart', onTouchDetected);
+    document.removeEventListener('touchstart', onTouchDetected);
     setKeyboard(true);
     setWaitingForInput(false);
   }, []);
@@ -85,18 +89,17 @@ export default function useControlMethods() {
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     window.removeEventListener('mousedown', onMouseDetected);
-    window.removeEventListener('ontouchstart', onTouchDetected);
+    document.removeEventListener('touchstart', onTouchDetected);
     setMouse(true);
     setWaitingForInput(false);
   }, []);
   
   const onTouchDetected = useCallback((event: TouchEvent) => {
-    event.preventDefault();
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
-    window.removeEventListener('mousemove', onMouseDetected);
-    window.removeEventListener('ontouchstart', onTouchDetected);
+    window.removeEventListener('mousedown', onMouseDetected);
+    document.removeEventListener('touchstart', onTouchDetected);
     setTouch(true);
     setWaitingForInput(false);
   }, []);
@@ -106,7 +109,7 @@ export default function useControlMethods() {
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('mousedown', onMouseDetected);
-    window.removeEventListener('ontouchstart', onTouchDetected);
+    document.removeEventListener('touchstart', onTouchDetected);
   }, []);
 
   useEffect(() => {
@@ -123,7 +126,7 @@ export default function useControlMethods() {
     window.addEventListener('gamepadconnected', onGamepadDetected);
     document.addEventListener('keydown', onKeyboardDetected);
     window.addEventListener('mousedown', onMouseDetected);
-    window.addEventListener('ontouchstart', onTouchDetected);
+    document.addEventListener('touchstart', onTouchDetected);
 
     return () => removeAllListeners();
   }, []);
@@ -134,6 +137,8 @@ export default function useControlMethods() {
     keyboard,
     mouse,
     touch,
+    //touchDispatch,
+    //touchInputs,
     waitingForInput,
   };
 }

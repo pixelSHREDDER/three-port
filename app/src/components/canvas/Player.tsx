@@ -20,7 +20,7 @@ export default function Player(props: SphereProps) {
   }));
   const keyboard: IKeyboardState = useKeyboardControls(controlMethods.keyboard);
   const gamepad: IGamepadState = useGamepadControls(controlMethods.activeGamepadIndex);
-  const speed = 10;
+  const speed: number = 10;
 
   const directionVector = useMemo(() => new Vector3(), []);
   const frontVector = useMemo(() => new Vector3(), []);
@@ -30,7 +30,7 @@ export default function Player(props: SphereProps) {
   const updateKeyboard = useCallback((inputs: IKeyboardInputs) => {
     const lookX = Number(inputs.lookLeft) - Number(inputs.lookRight);
     const lookY = Number(inputs.lookDown) - Number(inputs.lookUp);
-    
+
     ref.current.getWorldPosition(camera.position);
     frontVector.set(0, 0, Number(inputs.moveBackward) - Number(inputs.moveForward));
     sideVector.set(Number(inputs.moveLeft) - Number(inputs.moveRight), 0, 0);
