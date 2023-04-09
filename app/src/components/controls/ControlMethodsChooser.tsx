@@ -17,11 +17,6 @@ export default function ControlMethodsChooser() {
             fov: 80,
             position: [0, 0, 5],
           }}
-          /*orbitProps={{
-            maxPolarAngle: Math.PI / 1.5,
-            minPolarAngle: Math.PI / 3.5,
-            //target: [0, 0, 5]
-          }}*/
         />
       }
       

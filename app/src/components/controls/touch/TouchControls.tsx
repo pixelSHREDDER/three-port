@@ -1631,33 +1631,48 @@ const TouchControls = (props: ITouchControlsProps) => {
   const [lftValue, setLftValue] = useState(0);
   const [lookXValue, setLookXValue] = useState(0);
   const [lookYValue, setLookYValue] = useState(0);
+  const [recenteringLookY, setRecenteringLookY] = useState(false);
 
   const tempVector = useMemo(() => new Vector3(), []);
   const upVector = useMemo(() => new Vector3(0, 1, 0), []);
   const lookVector = useMemo(() => new Vector3(0, 1, 0), []);
 
+  const rotateCoords = (x, y, radians) => {
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    const nx = (cos * x) + (sin * y);
+    const ny = (cos * y) - (sin * x);
+    return {x: nx, y: ny};
+}
+
   const handleMove = (evt, data) => {
-    let forward = data.vector.y;
-    let turn = data.vector.x;
-    if (forward > 0) {
-      setFwdValue(Math.abs(forward));
+    const rotatedVector = rotateCoords(data.vector.x, data.vector.y, -camRef.current.rotation.y);
+    if (rotatedVector.y > 0) {
+      setFwdValue(Math.abs(rotatedVector.y));
       setBkdValue(0);
-    } else if (forward < 0) {
+    } else if (rotatedVector.y < 0) {
       setFwdValue(0);
-      setBkdValue(Math.abs(forward));
+      setBkdValue(Math.abs(rotatedVector.y));
     }
-    if (turn > 0) {
+    if (rotatedVector.x > 0) {
       setLftValue(0);
-      setRgtValue(Math.abs(turn));
-    } else if (turn < 0) {
-      setLftValue(Math.abs(turn));
+      setRgtValue(Math.abs(rotatedVector.x));
+    } else if (rotatedVector.x < 0) {
+      setLftValue(Math.abs(rotatedVector.x));
       setRgtValue(0);
     }
   };
   
   const handleLook = (evt, data) => {
-    setLookXValue(lookXValue + data.vector.x);
-    setLookYValue(data.vector.y);
+    setLookXValue(lookXValue => lookXValue + data.vector.x);
+    let newLookYValue = lookYValue + data.vector.y;
+    if (lookYValue >= 1 && newLookYValue > 0) {
+      setLookYValue(1);
+    } else if (lookYValue <= -1 && newLookYValue < 0) {
+      setLookYValue(-1);
+    } else {
+      setLookYValue(newLookYValue);
+    }
   };
 
   const useKeyboard = () => {
@@ -1724,9 +1739,18 @@ const TouchControls = (props: ITouchControlsProps) => {
       setRgtValue(0);
     };
       
-    const handleLookEnd = () => {
-      setLookXValue(0);
-      setLookYValue(0);
+    const handleLookEnd = () => {};
+
+    const recenterLookY = () => {
+      if (!recenteringLookY) {
+        return;
+      }
+      if (Math.abs(lookYValue) < 0.05) {
+        setLookYValue(0);
+        setRecenteringLookY(false);
+        return;
+      }
+      setLookYValue(lookYValue => lookYValue > 0 ? lookYValue - 0.05 : lookYValue + 0.05);
     };
 
     useEffect(() => {
@@ -1749,7 +1773,12 @@ const TouchControls = (props: ITouchControlsProps) => {
         }
       };
     }, []);
+
+    return recenterLookY;
   };
+
+  const recenterLookY = useJoystick();
+  useKeyboard();
 
   const updatePlayer = useCallback(() => {
     let mesh = meshRef.current;
@@ -1777,48 +1806,47 @@ const TouchControls = (props: ITouchControlsProps) => {
       tempVector.set(rgtValue, 0, 0).applyAxisAngle(upVector, angle);
       mesh.position.addScaledVector(tempVector, props.mult);
     }
+        
+    camera.rotateX(lookYValue);  
+    camera.rotateOnWorldAxis(lookVector, -lookXValue);
     
+    if ((fwdValue > 0.5 || bkdValue > 0.5) && (Math.abs(camera.rotation.x) >= 0.05)) {
+      setRecenteringLookY(true);
+      recenterLookY();
+    }
+
     mesh.updateMatrixWorld();
     // reposition camera
     camera.position.sub(controls.target);
     controls.target.copy(mesh.position);
     camera.position.add(mesh.position);
-
-    /*if (camera.rotation.x >= 1 && -lookYValue > 0) {
-      camera.rotation.x = 1;
-    } else if (camera.rotation.x <= -1 && -lookYValue < 0) {
-      camera.rotation.x = -1;
-    } else {*/
-      camera.rotateX(lookYValue);
-    //}
-    camera.rotateOnWorldAxis(lookVector, -lookXValue);
-  }, [fwdValue, bkdValue, lftValue, rgtValue, lookYValue, lookVector, lookXValue, tempVector, upVector, props.mult]);
+  }, [fwdValue, bkdValue, lftValue, rgtValue, lookYValue, lookVector, lookXValue, tempVector, upVector, props.mult, recenterLookY]);
   
   useFrame(() => updatePlayer());
-    
-  useJoystick();
-  useKeyboard();
 
   return (
-    <React.Fragment>
+    <>
       <PerspectiveCamera rotationOrder="YXZ" {...props.camProps} ref={camRef} />
       <OrbitControls
         autoRotate={false}
         enableDamping={false}
         enableZoom={false}
         enablePan={false}
-        enableRotate={false}
+        enableRotate={true}
         autoRotateSpeed={0}
-        rotateSpeed={0}
+        rotateSpeed={0.5}
         dampingFactor={0}
         {...props.orbitProps}
         ref={orbitRef} />
-      <mesh position={props.orbitProps.target || [0,0,0]} visible={false} ref={meshRef}>
+      <mesh
+        position={props.orbitProps.target || [0,0,0]}
+        visible={false}
+        ref={meshRef}>
         <boxGeometry args={[1,1,1]}>
           <meshStandardMaterial color="white" />
         </boxGeometry>
       </mesh>
-    </React.Fragment>
+    </>
   );
 };
 
