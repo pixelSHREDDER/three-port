@@ -1808,9 +1808,9 @@ const TouchControls = (props: ITouchControlsProps) => {
     }
         
     camera.rotateX(lookYValue);  
-    camera.rotateOnWorldAxis(lookVector, -lookXValue);
+    camera.rotateOnWorldAxis(lookVector, (-lookXValue * props.mult));
     
-    if ((fwdValue > 0.5 || bkdValue > 0.5) && (Math.abs(camera.rotation.x) >= 0.05)) {
+    if ((fwdValue > 0 || bkdValue > 0) && (Math.abs(camera.rotation.x) >= 0.05)) {
       setRecenteringLookY(true);
       recenterLookY();
     }
