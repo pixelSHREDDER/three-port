@@ -354,7 +354,8 @@ function Nipple (collection, options) {
         fadeTime: 250,
         dataOnly: false,
         restJoystick: true,
-        restOpacity: 0.5,
+        restOpacity: 0.9,
+        label: '',
         mode: 'dynamic',
         zone: document.body,
         lockX: false,
@@ -414,16 +415,20 @@ Nipple.prototype.buildEl = function (options) {
     this.ui.el = document.createElement('div');
     this.ui.back = document.createElement('div');
     this.ui.front = document.createElement('div');
+    this.ui.label = document.createElement('div');
+    this.ui.label.innerHTML = `↾<br/>↼ ${this.options.label} ⇁<br/>⇃`;
 
     this.ui.el.className = 'nipple collection_' + this.collection.id;
     this.ui.back.className = 'back';
     this.ui.front.className = 'front';
+    this.ui.label.className = 'label';
 
     this.ui.el.setAttribute('id', 'nipple_' + this.collection.id +
         '_' + this.id);
 
     this.ui.el.appendChild(this.ui.back);
     this.ui.el.appendChild(this.ui.front);
+    this.ui.front.appendChild(this.ui.label);
 
     return this;
 };
@@ -451,20 +456,36 @@ Nipple.prototype.stylize = function () {
         height: this.options.size + 'px',
         marginLeft: -this.options.size / 2 + 'px',
         marginTop: -this.options.size / 2 + 'px',
-        background: this.options.color,
-        'opacity': '.5'
+        //background: this.options.color,
+        border: '1px solid #999',
+        backgroundImage: 'radial-gradient(#000 40%, #666 90%)',
+        //filter: 'drop-shadow(-2px 0px 4px #000)',
+        'opacity': '.25'
     };
 
     styles['front'] = {
-        width: this.options.size / 2 + 'px',
-        height: this.options.size / 2 + 'px',
+        width: this.options.size / 1.25 + 'px',
+        height: this.options.size / 1.25 + 'px',
         position: 'absolute',
         display: 'block',
-        marginLeft: -this.options.size / 4 + 'px',
-        marginTop: -this.options.size / 4 + 'px',
-        background: this.options.color,
-        'opacity': '.5'
+        marginLeft: -this.options.size / 2.5 + 'px',
+        marginTop: -this.options.size / 2.5 + 'px',
+        //background: this.options.color,
+        //border: '2px solid #444',
+        backgroundImage: 'radial-gradient(#000 4%, #111 38%, #555 60%, #333 90%)',
+        //filter: 'drop-shadow(-3px 10px 4px #000)',
+        'opacity': '.5',
     };
+
+    styles['label'] = {
+      width: this.options.size / 1.25 + 'px',
+        height: this.options.size / 1.25 + 'px',
+      color: '#bbb',
+      fontSize: '18px',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      lineHeight: '30px',
+  };
 
     extend(styles['el'], transitStyle);
     if(this.options.shape === 'circle'){
@@ -769,7 +790,8 @@ function Collection (manager, options) {
         fadeTime: 250,
         dataOnly: false,
         restJoystick: true,
-        restOpacity: 0.5,
+        restOpacity: 0.9,
+        label: '',
         lockX: false,
         lockY: false,
         shape: 'circle',
@@ -903,6 +925,7 @@ Collection.prototype.createNipple = function (position, identifier) {
         dataOnly: opts.dataOnly,
         restJoystick: opts.restJoystick,
         restOpacity: opts.restOpacity,
+        label: opts.label,
         mode: opts.mode,
         identifier: identifier,
         position: position,
@@ -1582,25 +1605,27 @@ var nipplejs = {
 
 let joyManagers = [];
 const NIPPLEJS_LEFT_OPTIONS = {
-    zone: document.getElementById("joystickWrapper1"),
-    size: 120,
-    multitouch: true,
-    maxNumberOfNipples: 2,
-    mode: "static",
-    restJoystick: true,
-    shape: "circle",
-    position: {
-        top: "60px",
-        left: "60px"
-    },
-    dynamicPage: true,
+  label: 'Move',  
+  zone: document.getElementById("joystickWrapper1"),
+  size: 120,
+  multitouch: true,
+  maxNumberOfNipples: 2,
+  mode: "static",
+  restJoystick: true,
+  shape: "circle",
+  position: {
+    top: "60px",
+    left: "60px"
+  },
+  dynamicPage: true,
 };
 const NIPPLEJS_RIGHT_OPTIONS = {
   ...NIPPLEJS_LEFT_OPTIONS,
+  label: 'Look',
   zone: document.getElementById("joystickWrapper2"),
   position: {
-      top: "60px",
-      right: "60px"
+    top: "60px",
+    right: "60px"
   },
 };
 
@@ -1739,7 +1764,7 @@ const TouchControls = (props: ITouchControlsProps) => {
       setRgtValue(0);
     };
       
-    const handleLookEnd = () => {};
+    const handleLookEnd = () => {setRecenteringLookY(true);};
 
     const recenterLookY = () => {
       if (!recenteringLookY) {
@@ -1810,7 +1835,11 @@ const TouchControls = (props: ITouchControlsProps) => {
     camera.rotateX(lookYValue);  
     camera.rotateOnWorldAxis(lookVector, (-lookXValue * props.mult));
     
-    if ((fwdValue > 0 || bkdValue > 0) && (Math.abs(camera.rotation.x) >= 0.05)) {
+    if (
+      (fwdValue > 0 || bkdValue > 0) &&
+      (Math.abs(camera.rotation.x) >= 0.05)/* &&
+      (Math.abs(camera.rotation.y - (lookXValue * props.mult)) <= 0.05)*/
+    ) {
       setRecenteringLookY(true);
       recenterLookY();
     }
