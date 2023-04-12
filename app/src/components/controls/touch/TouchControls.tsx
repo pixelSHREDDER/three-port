@@ -460,7 +460,7 @@ Nipple.prototype.stylize = function () {
         border: '1px solid #999',
         backgroundImage: 'radial-gradient(#000 40%, #666 90%)',
         //filter: 'drop-shadow(-2px 0px 4px #000)',
-        'opacity': '.25'
+        'opacity': '.6'
     };
 
     styles['front'] = {
@@ -474,7 +474,7 @@ Nipple.prototype.stylize = function () {
         //border: '2px solid #444',
         backgroundImage: 'radial-gradient(#000 4%, #111 38%, #555 60%, #333 90%)',
         //filter: 'drop-shadow(-3px 10px 4px #000)',
-        'opacity': '.5',
+        'opacity': '.75',
     };
 
     styles['label'] = {
@@ -1656,6 +1656,7 @@ const TouchControls = (props: ITouchControlsProps) => {
   const [lftValue, setLftValue] = useState(0);
   const [lookXValue, setLookXValue] = useState(0);
   const [lookYValue, setLookYValue] = useState(0);
+  const [isLooking, setIsLooking] = useState(false);
   const [recenteringLookY, setRecenteringLookY] = useState(false);
 
   const tempVector = useMemo(() => new Vector3(), []);
@@ -1689,6 +1690,7 @@ const TouchControls = (props: ITouchControlsProps) => {
   };
   
   const handleLook = (evt, data) => {
+    !isLooking && setIsLooking(true);
     setLookXValue(lookXValue => lookXValue + data.vector.x);
     let newLookYValue = lookYValue + data.vector.y;
     if (lookYValue >= 1 && newLookYValue > 0) {
@@ -1764,18 +1766,18 @@ const TouchControls = (props: ITouchControlsProps) => {
       setRgtValue(0);
     };
       
-    const handleLookEnd = () => {setRecenteringLookY(true);};
+    const handleLookEnd = () => { setIsLooking(false) };
 
     const recenterLookY = () => {
-      if (!recenteringLookY) {
+      if (!recenteringLookY || isLooking) {
         return;
       }
-      if (Math.abs(lookYValue) < 0.05) {
+      if (Math.abs(lookYValue) < 0.025) {
         setLookYValue(0);
         setRecenteringLookY(false);
         return;
       }
-      setLookYValue(lookYValue => lookYValue > 0 ? lookYValue - 0.05 : lookYValue + 0.05);
+      setLookYValue(lookYValue => lookYValue > 0 ? lookYValue - 0.025 : lookYValue + 0.025);
     };
 
     useEffect(() => {
@@ -1837,8 +1839,7 @@ const TouchControls = (props: ITouchControlsProps) => {
     
     if (
       (fwdValue > 0 || bkdValue > 0) &&
-      (Math.abs(camera.rotation.x) >= 0.05)/* &&
-      (Math.abs(camera.rotation.y - (lookXValue * props.mult)) <= 0.05)*/
+      (Math.abs(camera.rotation.x) >= 0.025)
     ) {
       setRecenteringLookY(true);
       recenterLookY();
