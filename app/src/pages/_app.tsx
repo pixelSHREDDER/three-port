@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { store } from '../store';
+import { Provider } from 'react-redux';
 import Header from '../config';
 import Layout from '../components/dom/Layout';
 import '../styles/index.css';
@@ -9,7 +11,7 @@ const Scene = dynamic(() => import('../components/canvas/Scene'), { ssr: true })
 export default function App({ Component, pageProps = { title: 'index' } }) {
   const ref = useRef();
   return (
-    <>
+    <Provider store={store}>
       <Header title={pageProps.title} />
       <Layout ref={ref}>
         <Component {...pageProps} />
@@ -26,6 +28,6 @@ export default function App({ Component, pageProps = { title: 'index' } }) {
         <div id="joystickWrapper1"></div>
         <div id="joystickWrapper2"></div>
       </div>
-    </>
+    </Provider>
   );
 }

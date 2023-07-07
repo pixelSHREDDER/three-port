@@ -1,16 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { PointerLockControls } from '@react-three/drei';
-import { ControlMethodsContext } from '../canvas/Scene';
 import dynamic from 'next/dynamic';
+import { useAppSelector } from '../../hooks';
+import useControlMethods from './useControlMethods';
+import { ControlMethods } from './controlsSlice';
 
 const TouchControls = dynamic(() => import('../controls/touch/TouchControls'), { ssr: false });
 
 export default function ControlMethodsChooser() {
-  const controlMethods = useContext(ControlMethodsContext);
+  const controlMethods = useAppSelector((state) => state.controls.controlMethods);
+  useControlMethods();
 
   return (
     <>
-      {!!controlMethods.touch &&
+      {controlMethods[ControlMethods.Touch] === true &&
         <TouchControls
           camProps={{
             makeDefault: true,
@@ -19,8 +22,7 @@ export default function ControlMethodsChooser() {
           }}
         />
       }
-      
-      {!!controlMethods.mouse &&
+      {controlMethods[ControlMethods.Mouse] === true &&
         <>
           {/* @ts-ignore */}
           <PointerLockControls />

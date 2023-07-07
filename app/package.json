@@ -23,6 +23,7 @@
     "@react-three/cannon": "^6.5.2",
     "@react-three/drei": "^9.56.5",
     "@react-three/fiber": "^8.10.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "glsl-random": "^0.0.5",
     "leva": "^0.9.34",
     "next": "^13.1.6",
@@ -31,6 +32,8 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
+    "react-redux": "^8.1.1",
+    "redux": "^4.2.1",
     "styled-components": "^5.3.9",
     "three": "^0.149.0",
     "three-stdlib": "^2.21.6"

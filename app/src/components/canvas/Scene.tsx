@@ -1,4 +1,4 @@
-import React, { createContext, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
@@ -11,30 +11,23 @@ import { Physics } from '@react-three/cannon';
 import ControlMethodsChooser from '../controls/ControlMethodsChooser';
 import Floor from './Floor';
 import Player from './Player';
-import useControlMethods, { IControlMethods } from '../controls/useControlMethods';
+import useControlMethods from '../controls/useControlMethods';
+import { useAppSelector } from '../../hooks';
 import Image from 'next/image';
 import Modal from '../dom/Modal';
-
-export const ControlMethodsContext = createContext({
-  accelerometer: false,
-  activeGamepadIndex: -1,
-  keyboard: false,
-  mouse: false,
-  touch: false,
-  waitingForInput: true,
-} as IControlMethods);
+import { IControlsState } from '../controls/controlsSlice';
 
 export default function Scene({ children, ...props }) {
+  const { waitingForInput } = useAppSelector<IControlsState>((state) => state.controls);
   /*const { up, scale, ...config } = useControls({
     up: { value: -0.5, min: -10, max: 10 },
     scale: { value: 27, min: 0, max: 50 },
     roughness: { value: 0.06, min: 0, max: 0.15, step: 0.001 },
     envMapIntensity: { value: 1, min: 0, max: 5 }
   })*/
-  const controlMethods: IControlMethods = useControlMethods();
 
   return (
-    <ControlMethodsContext.Provider value={controlMethods}>
+    <>
       <Canvas
         {...props}
         frameloop="demand"
@@ -64,24 +57,24 @@ export default function Scene({ children, ...props }) {
           <BakeShadows />
         </Suspense>
       </Canvas>
-      {controlMethods.waitingForInput &&
-        <Modal>
+      {waitingForInput === true &&
+        <Modal classNames="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4 md:gap-6 justify-items-center items-center content-evenly md:content-center sm:auto-rows-fr md:auto-rows-max">
           <Image
-            className='flex-grow flex-shrink basis-px'
+            className="h-16 w-16 sm:h-auto sm:w-auto col-span-2"
             height={200}
             width={200}
             src={'/img/touch.gif'}
             alt="Tap the screen" />
-          <span className='text-cyan-200 text-xl p-4'>OR</span>
+          <span className="text-cyan-200 text-xl">OR</span>
           <Image
-            className='flex-grow flex-shrink basis-px'
+            className="h-16 w-16 sm:h-auto sm:w-auto col-span-2"
             height={200}
             width={200}
             src={'/img/gamepad.gif'}
             alt="Move the thumbsticks on the gamepad" />
-          <span className='text-cyan-200 text-xl p-4'>OR</span>
+          <span className="text-cyan-200 text-xl">OR</span>
           <Image
-            className='flex-grow flex-shrink basis-px'
+            className="h-16 w-32 sm:h-auto sm:w-auto sm:col-start-2 col-span-4"
             height={200}
             width={400}
             src={'/img/keyboard-mouse.gif'}
@@ -89,6 +82,6 @@ export default function Scene({ children, ...props }) {
         </Modal>
       }
       <Loader />
-    </ControlMethodsContext.Provider>
+    </>
   )
 }
