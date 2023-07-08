@@ -5,16 +5,22 @@ import { ControlMethods } from '../controlsSlice';
 
 export const useKeyboardControls = () => {
   const { controlMethods } = useAppSelector((state) => state.controls);
+  const { inputs } = useAppSelector((state) => state.keyboardControls);
   const dispatch = useAppDispatch();
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    dispatch(updateInput({ keyCode: e.code, pressed: false }));
+    if (inputs[e.code] === 1) {
+      return;
+    }
     dispatch(updateInput({ keyCode: e.code, pressed: true }));
-  }, [dispatch]);
+  }, [dispatch, inputs]);
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    if (inputs[e.code] === 0) {
+      return;
+    }
     dispatch(updateInput({ keyCode: e.code, pressed: false }));
-  }, [dispatch]);
+  }, [dispatch, inputs]);
 
   useEffect(() => {
     if (controlMethods[ControlMethods.Keyboard] === true) {
@@ -24,7 +30,7 @@ export const useKeyboardControls = () => {
   }, [controlMethods, handleKeyDown, handleKeyUp]);
 
   useEffect(() => { return () => {
-    document.removeEventListener('keypress', handleKeyDown);
+    document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('keyup', handleKeyUp);
   }}, []);
 };
