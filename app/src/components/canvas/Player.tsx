@@ -1,15 +1,17 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Vector3 } from 'three';
 import { SphereProps, useSphere } from '@react-three/cannon';
 import { useThree } from '@react-three/fiber';
-import { ControlMethodsContext } from './Scene';
 import { useKeyboardControls } from '../controls/keyboard/useKeyboardControls';
 import { useGamepadControls } from '../controls/gamepad/useGamepadControls';
 import { IGamepadInputs, IGamepadState } from '../controls/gamepad/gamepadControlsReducer';
-import { IKeyboardInputs, IKeyboardState } from '../controls/keyboard/keyboardControlsReducer';
+import { IKeyboardInputs, IKeyboardControlsState } from '../controls/keyboard/keyboardControlsSlice';
+import { useAppSelector } from '../../hooks';
 
 export default function Player(props: SphereProps) {
-  const controlMethods = useContext(ControlMethodsContext);
+  const { activeGamepadIndex } = useAppSelector((state) => state.controls);
+  const keyboard: IKeyboardControlsState = useAppSelector((state) => state.keyboardControls);
+  const gamepad: IGamepadState = useGamepadControls(activeGamepadIndex);
   const velocity = useRef([0, 0, 0]);
   const { camera } = useThree();
   const [ref, api] = useSphere(() => ({
@@ -18,8 +20,8 @@ export default function Player(props: SphereProps) {
     position: props.position,
     ...props,
   }));
-  const keyboard: IKeyboardState = useKeyboardControls(controlMethods.keyboard);
-  const gamepad: IGamepadState = useGamepadControls(controlMethods.activeGamepadIndex);
+  useKeyboardControls();
+
   const speed: number = 10;
 
   const directionVector = useMemo(() => new Vector3(), []);
@@ -72,7 +74,7 @@ export default function Player(props: SphereProps) {
   return (
     <group>
       <mesh position={props.position} ref={ref as any}>
-        <sphereGeometry args={props.args} />
+        {/*<sphereGeometry args={props.args} />*/}
         <meshStandardMaterial />
       </mesh>
     </group>

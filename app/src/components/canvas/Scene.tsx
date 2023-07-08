@@ -42,7 +42,7 @@ export default function Scene({ children, ...props }) {
             <spotLight angle={0.1} position={[-250, 120, -200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
             <spotLight angle={0.1} position={[250, 120, 200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
             <Physics gravity={[0, -9.8, 0]}>
-              {/*<Player position={[0, 5, 5]} />*/}
+              <Player position={[0, 5, 5]} />
               {children}
               <Floor
                 geometry={{ args: [20, 20] }}

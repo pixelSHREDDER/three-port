@@ -1,32 +1,30 @@
-import { useCallback, useEffect, useReducer } from 'react';
-import { defaultKeyboardState, keyboardReducer } from './keyboardControlsReducer';
+import { useCallback, useEffect } from 'react';
+import { updateInput } from './keyboardControlsSlice';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { ControlMethods } from '../controlsSlice';
 
-export const useKeyboardControls = (enabled: boolean) => {
-  const [keyboard, dispatch] = useReducer(keyboardReducer, defaultKeyboardState);
+export const useKeyboardControls = () => {
+  const { controlMethods } = useAppSelector((state) => state.controls);
+  const dispatch = useAppDispatch();
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => dispatch({
-    type: 'updateOneInput',
-    payload: { event: e, pressed: true }
-  }), []);
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    dispatch(updateInput({ keyCode: e.code, pressed: false }));
+    dispatch(updateInput({ keyCode: e.code, pressed: true }));
+  }, [dispatch]);
 
-  const handleKeyUp = useCallback((e: KeyboardEvent) => dispatch({
-    type: 'updateOneInput',
-    payload: { event: e, pressed: false }
-  }), []);
+  const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    dispatch(updateInput({ keyCode: e.code, pressed: false }));
+  }, [dispatch]);
 
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
+    if (controlMethods[ControlMethods.Keyboard] === true) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
     };
-  }, [enabled, handleKeyDown, handleKeyUp]);
+  }, [controlMethods, handleKeyDown, handleKeyUp]);
 
-  return keyboard;
+  useEffect(() => { return () => {
+    document.removeEventListener('keypress', handleKeyDown);
+    document.removeEventListener('keyup', handleKeyUp);
+  }}, []);
 };

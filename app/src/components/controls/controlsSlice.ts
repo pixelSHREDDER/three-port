@@ -10,14 +10,14 @@ export const enum ControlMethods {
 
 export interface IControlsState {
   activeGamepadIndex: number,
-  connectedGamepads: Set<number>,
+  connectedGamepads: number[],
   controlMethods: [boolean, boolean, boolean, boolean, boolean],
   waitingForInput: boolean,
 }
 
 export const defaultControlsState: IControlsState = {
   activeGamepadIndex: -1,
-  connectedGamepads: new Set(),
+  connectedGamepads: [],
   controlMethods: [false, false, false, false, false],
   waitingForInput: true,
 }
@@ -27,13 +27,13 @@ export const controlsSlice = createSlice({
   initialState: defaultControlsState,
   reducers: {
     addGamepad: (state, action: PayloadAction<number>) => {
-      state.connectedGamepads.add(action.payload);
+      state.connectedGamepads.push(action.payload);
     },
     clearActiveGamepad: (state) => {
 			state.activeGamepadIndex = -1;
     },
     removeGamepad: (state, action: PayloadAction<number>) => {
-      state.connectedGamepads.delete(action.payload);
+      state.connectedGamepads.filter(pad => pad !== action.payload);
     },
     setActiveGamepad: (state, action: PayloadAction<number>) => {
 			state.activeGamepadIndex = action.payload;

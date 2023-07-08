@@ -8,6 +8,7 @@ import {
   setWaitingForInput,
   toggleControlMethod,
 } from './controlsSlice';
+import { useKeyboardControls } from './keyboard/useKeyboardControls';
 //import { touchReducer, defaultTouchState, ITouchInputs, ITouchAction } from './touch/touchControlsReducer-old';
 /*import { BrowserTypes, getSelectorsByUserAgent } from 'react-device-detect';
 import { GetServerSideProps } from 'next'*/
@@ -28,6 +29,7 @@ interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
 
 export default function useControlMethods() {
   const dispatch = useAppDispatch();
+  useKeyboardControls();
   //const [touchInputs, touchDispatch] = useReducer(touchReducer, defaultTouchState);
 
   const onAccelerometerDetected = useCallback((event: DeviceMotionEvent) => {
@@ -35,14 +37,8 @@ export default function useControlMethods() {
       event.preventDefault();
       document.removeEventListener('keydown', onKeyboardDetected);
       document.removeEventListener('touchstart', onTouchDetected);
-      dispatch({
-        type: toggleControlMethod,
-        payload: ControlMethods.Accelerometer,
-      });
-      dispatch({
-        type: setWaitingForInput,
-        payload: false
-      });
+      dispatch(toggleControlMethod(ControlMethods.Accelerometer));
+      dispatch(setWaitingForInput(false));
     }
   }, []);
 
@@ -51,34 +47,18 @@ export default function useControlMethods() {
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('mousedown', onMouseDetected);
     document.removeEventListener('touchstart', onTouchDetected);
-    
-    dispatch({
-      type: addGamepad,
-      payload: event.gamepad.index,
-    });
+    dispatch(addGamepad(event.gamepad.index));
     
     if (event.gamepad.mapping === 'standard') {
-      dispatch({
-        type: setActiveGamepad,
-        payload: event.gamepad.index,
-      });
+      dispatch(setActiveGamepad(event.gamepad.index));
     }
     window.addEventListener('gamepaddisconnected', onGamepadDisconnected);
-    dispatch({
-      type: toggleControlMethod,
-      payload: ControlMethods.Gamepad,
-    });
-    dispatch({
-      type: setWaitingForInput,
-      payload: false
-    });
+    dispatch(toggleControlMethod(ControlMethods.Gamepad));
+    dispatch(setWaitingForInput(false));
   }, []);
 
   const onGamepadDisconnected = useCallback((event: GamepadEvent) => {
-    dispatch({
-      type: removeGamepad,
-      payload: event.gamepad.index,
-    });
+    dispatch(removeGamepad(event.gamepad.index));
   }, []);
 
   const onKeyboardDetected = useCallback((event: KeyboardEvent) => {
@@ -86,14 +66,8 @@ export default function useControlMethods() {
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('touchstart', onTouchDetected);
-    dispatch({
-      type: toggleControlMethod,
-      payload: ControlMethods.Keyboard,
-    });
-    dispatch({
-      type: setWaitingForInput,
-      payload: false
-    });
+    dispatch(toggleControlMethod(ControlMethods.Keyboard));
+    dispatch(setWaitingForInput(false));
   }, []);
 
   const onMouseDetected = useCallback((event: MouseEvent) => {
@@ -101,14 +75,8 @@ export default function useControlMethods() {
     window.removeEventListener('devicemotion', onAccelerometerDetected);
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('touchstart', onTouchDetected);
-    dispatch({
-      type: toggleControlMethod,
-      payload: ControlMethods.Mouse,
-    });
-    dispatch({
-      type: setWaitingForInput,
-      payload: false
-    });
+    dispatch(toggleControlMethod(ControlMethods.Mouse));
+    dispatch(setWaitingForInput(false));
   }, []);
   
   const onTouchDetected = useCallback((event: TouchEvent) => {
@@ -116,14 +84,8 @@ export default function useControlMethods() {
     window.removeEventListener('gamepadconnected', onGamepadDetected);
     document.removeEventListener('keydown', onKeyboardDetected);
     window.removeEventListener('mousedown', onMouseDetected);
-    dispatch({
-      type: toggleControlMethod,
-      payload: ControlMethods.Touch,
-    });
-    dispatch({
-      type: setWaitingForInput,
-      payload: false
-    });
+    dispatch(toggleControlMethod(ControlMethods.Touch));
+    dispatch(setWaitingForInput(false));
   }, []);
 
   const removeAllListeners = useCallback(() => {
