@@ -2,6 +2,8 @@ import dynamic from 'next/dynamic'
 import Modal from '../components/dom/Modal'
 import Item from '../components/canvas/Item'
 import React from 'react'
+import { useLoader } from '@react-three/fiber'
+import { OBJLoader } from 'three-stdlib'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
@@ -18,29 +20,29 @@ export default function Page(props) {}
 Page.canvas = (props) =>
   <>
     <Item
-      rotation-y={-0.15}
+      rotation={[0, 0.75, 0]}
+      obj={props.arcade}
       color="hotpink"
-      scale={0.5}
       position={[-6, 12, 1]}
       route={undefined} />
     <Item
-      rotation-y={-0.75}
-      color="hotpink"
-      scale={0.5}
-      position={[-3, 14, 0.5]}
+      rotation={[0, 0.15, 0]}
+      obj={props.arcade}
+      color="green"
+      position={[-3, 14, -1.5]}
       route={undefined} />
     <Logo scale={0.25} route='/blob' position-y={1} />
     <Item
-      rotation-y={0.75}
+      rotation={[0, -0.15, 0]}
+      obj={props.arcade}
       color="hotpink"
-      scale={0.5}
-      position={[3, 14, 0.5]}
+      position={[3, 14, -1.5]}
       route={undefined} />
     <Item
-      rotation-y={0.15}
+      rotation={[0, -0.75, 0]}
+      obj={props.arcade}
       color="hotpink"
-      scale={0.5}
-      position={[6, 12, 1.25]}
+      position={[6, 12, 1]}
       route={undefined} />
   </>
 

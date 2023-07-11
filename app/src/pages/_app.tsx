@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 import Header from '../config';
 import Layout from '../components/dom/Layout';
 import '../styles/index.css';
+import { useLoader } from '@react-three/fiber';
+import { OBJLoader } from 'three-stdlib';
 
 const Scene = dynamic(() => import('../components/canvas/Scene'), { ssr: true });
 

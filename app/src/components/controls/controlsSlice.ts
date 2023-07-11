@@ -10,15 +10,28 @@ export const enum ControlMethods {
 }
 
 export type FocusedObject = {
-  position: Vector3,
-  rotation: Euler,
+  position: {
+    x: number,
+    y: number,
+    z: number,
+  },
+  rotation: {
+    x: number,
+    y: number,
+    z: number,
+  },
+  scale: {
+    x: number,
+    y: number,
+    z: number,
+  },
 }
 
 export interface IControlsState {
   activeGamepadIndex: number,
   connectedGamepads: number[],
   controlMethods: [boolean, boolean, boolean, boolean, boolean],
-  focusedObject: FocusedObject | undefined,
+  focusedObject: FocusedObject | null,
   waitingForInput: boolean,
 }
 
@@ -26,7 +39,7 @@ export const defaultControlsState: IControlsState = {
   activeGamepadIndex: -1,
   connectedGamepads: [],
   controlMethods: [false, false, false, false, false],
-  focusedObject: undefined,
+  focusedObject: null,
   waitingForInput: true,
 }
 
@@ -41,7 +54,7 @@ export const controlsSlice = createSlice({
 			state.activeGamepadIndex = -1;
     },
     clearFocusedObject: (state) => {
-      state.focusedObject = undefined;
+      state.focusedObject = null;
     },
     removeGamepad: (state, action: PayloadAction<number>) => {
       state.connectedGamepads.filter(pad => pad !== action.payload);

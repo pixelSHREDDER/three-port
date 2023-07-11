@@ -20,9 +20,11 @@
     "start": "next start"
   },
   "dependencies": {
+    "@react-spring/three": "^9.7.3",
     "@react-three/cannon": "^6.5.2",
     "@react-three/drei": "^9.56.5",
     "@react-three/fiber": "^8.10.1",
+    "@react-three/rapier": "^1.1.1",
     "@reduxjs/toolkit": "^1.9.5",
     "glsl-random": "^0.0.5",
     "leva": "^0.9.34",

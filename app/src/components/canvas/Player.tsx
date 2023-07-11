@@ -6,14 +6,16 @@ import { useKeyboardControls } from '../controls/keyboard/useKeyboardControls';
 import { useGamepadControls } from '../controls/gamepad/useGamepadControls';
 import { IGamepadInputs, IGamepadState } from '../controls/gamepad/gamepadControlsReducer';
 import { IKeyboardInputs, IKeyboardControlsState } from '../controls/keyboard/keyboardControlsSlice';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { clearFocusedObject } from '../controls/controlsSlice';
 
 export default function Player(props: SphereProps) {
   const { activeGamepadIndex, focusedObject } = useAppSelector((state) => state.controls);
   const keyboard: IKeyboardControlsState = useAppSelector((state) => state.keyboardControls);
+  const dispatch = useAppDispatch();
   const gamepad: IGamepadState = useGamepadControls(activeGamepadIndex);
   const velocity = useRef([0, 0, 0]);
-  const { camera } = useThree();
+  const camera = useThree((state) => state.camera);
   const [ref, api] = useSphere(() => ({
     mass: 1,
     type: 'Dynamic',
@@ -23,11 +25,24 @@ export default function Player(props: SphereProps) {
   useKeyboardControls();
 
   const SPEED: number = 10;
+  const COLLISION_BUFFER = 0.5;
 
   const directionVector = useMemo(() => new Vector3(), []);
   const frontVector = useMemo(() => new Vector3(), []);
   const sideVector = useMemo(() => new Vector3(), []);
   const lookVector = useMemo(() => new Vector3(0, 1, 0), []);
+
+  const positionToVector = useMemo<THREE.Vector3 | null>(() => {
+    if (!!focusedObject) {
+      return new Vector3(
+        focusedObject.position.x + focusedObject.scale.x + COLLISION_BUFFER,
+        camera.position.y,
+        focusedObject.position.z + focusedObject.scale.z + COLLISION_BUFFER,
+      );
+    } else {
+      return null;
+    }
+  }, [camera.position.y, focusedObject]);
 
   const updateKeyboard = useCallback((inputs: IKeyboardInputs) => {
     const lookX = Number(inputs.lookLeft) - Number(inputs.lookRight);
@@ -66,37 +81,27 @@ export default function Player(props: SphereProps) {
     camera.rotateOnWorldAxis(lookVector, Number(inputs.rightStickX));
   }, [api.velocity, camera, directionVector, frontVector, lookVector, ref, sideVector]);
 
-  //button.addEventListener("click", function() {
-  const moveToFocusedObject = useCallback((focusedObject) => {
-    camera.position.lerp(focusedObject.position, SPEED);
-    //camera.rotation.lerp(focusedObject.position, 0.1);
-    /*let tween1 = new TWEEN.Tween(camera.position)
-    .to({
-        x : 200,
-        y : 200,
-        z : 200
-    } , 1000)
-    .easing(TWEEN.Easing.Linear.None)
-    .start();*/
-  }, []);
-
-  useFrame(() => {
-    updateKeyboard(keyboard.inputs);
-    if (!!focusedObject) {
-      moveToFocusedObject(focusedObject);
+  const moveToFocusedObject = useCallback((state, delta) => {
+    if (Math.floor(positionToVector.distanceTo(state.camera.position)) <= 0) {
+      ref.current.getWorldPosition(state.camera.position);
+      state.camera.updateProjectionMatrix();
+      dispatch(clearFocusedObject());
+      return null;
     }
-  });
+
+    //ref.current.getWorldPosition(state.camera.position);
+    state.camera.lookAt(positionToVector);
+    state.camera.position.lerp(positionToVector, delta);
+    state.camera.updateProjectionMatrix();
+  }, [dispatch, positionToVector, ref]);
 
   useEffect(() => updateGamepad(gamepad.inputs), [gamepad.inputs, updateGamepad]);
   useEffect(() => api.velocity.subscribe((v) => (velocity.current = v)), [api.velocity]);
   useEffect(() => { camera.rotation.order = 'YXZ';  }, [camera.rotation]);
 
-  return (
-    <group>
-      <mesh position={props.position} ref={ref as any}>
-        {/*<sphereGeometry args={props.args} />*/}
-        <meshStandardMaterial />
-      </mesh>
-    </group>
-  );
+  return useFrame((state, delta) => {
+    !!focusedObject ? moveToFocusedObject(state, delta) : updateKeyboard(keyboard.inputs);
+    return null;
+  });
+
 };

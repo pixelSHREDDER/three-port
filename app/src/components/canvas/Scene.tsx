@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+//import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
@@ -11,11 +12,14 @@ import { Physics } from '@react-three/cannon';
 import ControlMethodsChooser from '../controls/ControlMethodsChooser';
 import Floor from './Floor';
 import Player from './Player';
-import useControlMethods from '../controls/useControlMethods';
+//import useControlMethods from '../controls/useControlMethods';
 import { useAppSelector } from '../../hooks';
 import Image from 'next/image';
 import Modal from '../dom/Modal';
 import { IControlsState } from '../controls/controlsSlice';
+//import CameraControls from 'camera-controls';
+
+//CameraControls.install({ THREE });
 
 export default function Scene({ children, ...props }) {
   const { waitingForInput } = useAppSelector<IControlsState>((state) => state.controls);
@@ -53,7 +57,8 @@ export default function Scene({ children, ...props }) {
           </group>
           <Preload all />
           <ControlMethodsChooser />
-          <Environment files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr" background />
+          {/*<Environment files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr" background />*/}
+          <Environment files='/env/satara_night_no_lamps_4k.hdr' background />
           <BakeShadows />
         </Suspense>
       </Canvas>
