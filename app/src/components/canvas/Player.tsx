@@ -32,7 +32,7 @@ export default function Player(props: SphereProps) {
   const sideVector = useMemo(() => new Vector3(), []);
   const lookVector = useMemo(() => new Vector3(0, 1, 0), []);
 
-  const positionToVector = useMemo<THREE.Vector3 | null>(() => {
+  const positionToVector = useMemo<Vector3 | null>(() => {
     if (!!focusedObject) {
       return new Vector3(
         focusedObject.position.x + focusedObject.scale.x + COLLISION_BUFFER,
