@@ -1,11 +1,10 @@
 import React, { Suspense } from 'react';
-//import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import {
-  Environment,
   Preload,
   BakeShadows,
-  Loader
+  Loader,
+  Stars
 } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
 //import { useControls } from 'leva';
@@ -17,9 +16,6 @@ import { useAppSelector } from '../../hooks';
 import Image from 'next/image';
 import Modal from '../dom/Modal';
 import { IControlsState } from '../controls/controlsSlice';
-//import CameraControls from 'camera-controls';
-
-//CameraControls.install({ THREE });
 
 export default function Scene({ children, ...props }) {
   const { waitingForInput } = useAppSelector<IControlsState>((state) => state.controls);
@@ -50,15 +46,21 @@ export default function Scene({ children, ...props }) {
               {children}
               <Floor
                 geometry={{ args: [20, 20] }}
-                position={[0, -.1, 0]}
+                //position={[0, 0, 0]}
                 rotation={[Math.PI / -2, 0, 0]}
                 color="green" />
             </Physics>
           </group>
           <Preload all />
           <ControlMethodsChooser />
-          {/*<Environment files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr" background />*/}
-          <Environment files='/env/satara_night_no_lamps_4k.hdr' background />
+          <Stars
+            radius={100}
+            depth={100}
+            count={10000}
+            factor={4}
+            saturation={0}
+            fade
+            speed={1} />
           <BakeShadows />
         </Suspense>
       </Canvas>

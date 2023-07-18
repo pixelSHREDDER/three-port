@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import React, { useRef, useCallback, useEffect, useState, useMemo } from 'react';
 import { Vector3 } from 'three';
 import Manager from './manager';
+import { useAppSelector } from '../../../hooks';
+import { ControlMethods } from '../controlsSlice';
 
 /* @ts-ignore */
 const factory = new Manager();
@@ -40,22 +42,20 @@ const NIPPLEJS_RIGHT_OPTIONS = {
 };
 
 export interface ITouchControlsProps {
-  enableJoysticks?: boolean,
-  enableKeyboard?: boolean,
   orbitProps?: OrbitControlsProps,
   camProps?: any,
   mult?: number,
 };
 
 const defaultTouchControlsProps = {
-  enableJoysticks: true,
-  enableKeyboard: true,
   orbitProps: {},
   camProps: {},
   mult: 0.1,
 };
 
 const TouchControls = (props: ITouchControlsProps) => {
+  const { controlMethods } = useAppSelector((state) => state.controls);
+  
   const orbitRef = useRef(undefined);
   const camRef = useRef(undefined);
   const meshRef = useRef(undefined);
@@ -156,7 +156,7 @@ const TouchControls = (props: ITouchControlsProps) => {
     };
   
     useEffect(() => {
-      if (props.enableKeyboard) {
+      if (controlMethods[ControlMethods.Keyboard] === true) {
         document.addEventListener("keydown", onKeyDown);
         document.addEventListener("keyup", onKeyUp);
       }
@@ -191,7 +191,7 @@ const TouchControls = (props: ITouchControlsProps) => {
     };
 
     useEffect(() => {
-      if (!joyManagers.length && props.enableJoysticks) {
+      if (!joyManagers.length && (controlMethods[ControlMethods.Touch] === true)) {
         // @ts-ignore
         joyManagers.push(nipplejs.create(NIPPLEJS_LEFT_OPTIONS));
         joyManagers[0].on("move", handleMove);

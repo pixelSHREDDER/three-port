@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-import Modal from '../components/dom/Modal'
 import Item from '../components/canvas/Item'
 import React from 'react'
 import { useLoader } from '@react-three/fiber'
@@ -21,26 +20,22 @@ Page.canvas = (props) =>
   <>
     <Item
       rotation={[0, 0.75, 0]}
-      obj={props.arcade}
       color="hotpink"
       position={[-6, 12, 1]}
       route={undefined} />
     <Item
       rotation={[0, 0.15, 0]}
-      obj={props.arcade}
       color="green"
       position={[-3, 14, -1.5]}
       route={undefined} />
     <Logo scale={0.25} route='/blob' position-y={1} />
     <Item
       rotation={[0, -0.15, 0]}
-      obj={props.arcade}
       color="hotpink"
       position={[3, 14, -1.5]}
       route={undefined} />
     <Item
       rotation={[0, -0.75, 0]}
-      obj={props.arcade}
       color="hotpink"
       position={[6, 12, 1]}
       route={undefined} />

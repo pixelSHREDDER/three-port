@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../hooks';
 import { setFocusedObject } from '../controls/controlsSlice';
 import { Group, Mesh, MeshNormalMaterial, Vector3 } from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import useModel from './useModel';
+//import useModel from './useModel';
 //import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 
@@ -18,16 +18,15 @@ export interface ItemProps extends MeshProps {
   route: string,
 }
 
-const mat = new MeshNormalMaterial();
-
 export default function Item({ route, ...props }) {
   const dispatch = useAppDispatch();
   //const router = useRouter();
   const [hovered, hover] = useState(false);
-  const arcade = useModel('/models/arcade/arcade_machine_v2.obj');
+  //const arcade = useModel('/models/arcade/Arcade machine.obj');
 
-  const obj = useLoader(OBJLoader, '/models/arcade/arcade_machine_v2.obj');
+  const obj = useLoader(OBJLoader, '/models/arcade/Arcade machine.obj');
   const clone = useMemo(() => {
+    const mat = new MeshNormalMaterial();
     const newObj = obj.clone();
     newObj.traverse((child) => {
       if (child instanceof Mesh) {
@@ -36,7 +35,6 @@ export default function Item({ route, ...props }) {
         child.material.transparent = true;
       }
     });
-    //newObj.material.color = props.color;
     return newObj;
   }, [obj, props.color]);
 
@@ -46,6 +44,7 @@ export default function Item({ route, ...props }) {
     mass: 100,
     //position: props.position,
     ...props,
+    args: [0.5, 0.5, 0.5],
   }));
   
 
@@ -116,7 +115,7 @@ export default function Item({ route, ...props }) {
         onPointerOut={() => hover(false)}
         {...props}
         ref={ref as any}
-        scale={[0.25, 0.2, 0.2]}
+        scale={[0.0325, 0.025, 0.025]}
         position={props.position}
         object={clone} />
       }

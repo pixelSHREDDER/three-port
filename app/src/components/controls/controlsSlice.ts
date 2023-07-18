@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Euler, Vector3 } from 'three';
 
 export const enum ControlMethods {
   Accelerometer,

@@ -8,13 +8,13 @@ import { ControlMethods } from './controlsSlice';
 const TouchControls = dynamic(() => import('../controls/touch/TouchControls'), { ssr: false });
 
 export default function ControlMethodsChooser() {
-  const controlMethods = useAppSelector((state) => state.controls.controlMethods);
+  const { controlMethods } = useAppSelector((state) => state.controls);
   useControlMethods();
 
   return (
     <>
       {controlMethods[ControlMethods.Touch] === true &&
-        <TouchControls
+        <TouchControls  
           camProps={{
             makeDefault: true,
             fov: 80,
