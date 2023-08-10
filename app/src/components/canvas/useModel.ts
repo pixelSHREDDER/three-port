@@ -1,7 +1,8 @@
 import { useLoader } from "@react-three/fiber";
 import { useState, useEffect } from "react";
 import { Group } from "three";
-import { OBJLoader } from "three-stdlib";
+//import { OBJLoader } from "three-stdlib";
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 
 export default function useModel(objUrl: string) {
   const [objs, setObjs] = useState<Group | null>(null);

@@ -6,7 +6,7 @@ import {
   Loader,
   Stars
 } from '@react-three/drei';
-import { Physics } from '@react-three/cannon';
+import { Debug, Physics } from '@react-three/cannon';
 //import { useControls } from 'leva';
 import ControlMethodsChooser from '../controls/ControlMethodsChooser';
 import Floor from './Floor';
@@ -42,13 +42,15 @@ export default function Scene({ children, ...props }) {
             <spotLight angle={0.1} position={[-250, 120, -200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
             <spotLight angle={0.1} position={[250, 120, 200]} intensity={1} castShadow shadow-mapSize={[50, 50]} shadow-bias={-0.000001} />
             <Physics gravity={[0, -9.8, 0]}>
-              <Player position={[0, 5, 5]} />
-              {children}
-              <Floor
-                geometry={{ args: [20, 20] }}
-                //position={[0, 0, 0]}
-                rotation={[Math.PI / -2, 0, 0]}
-                color="green" />
+              <Debug color="red" scale={1}>
+                <Player position={[0, 5, 5]} />
+                {children}
+                <Floor
+                  geometry={{ args: [20, 20] }}
+                  //position={[0, 0, 0]}
+                  rotation={[Math.PI / -2, 0, 0]}
+                  color="green" />
+              </Debug>
             </Physics>
           </group>
           <Preload all />
