@@ -1,26 +1,38 @@
-import React, { ReactNode, forwardRef, useImperativeHandle, useRef } from 'react';
+'use client'
 
-interface Props {
-  children?: ReactNode,
-}
+import { useRef } from 'react'
+import dynamic from 'next/dynamic'
+const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
-export type Ref = HTMLElement;
-
-const Layout = forwardRef<Ref, Props>((props, ref) => {
-  const localRef = useRef();
-
-  useImperativeHandle(ref, () => localRef.current);
+const Layout = ({ children }) => {
+  const ref = useRef()
 
   return (
     <div
-      ref={localRef}
-      className='absolute top-0 left-0 z-10 h-screen w-screen overflow-hidden bg-zinc-900 text-gray-50'>
-      <span className='fixed top-2/4 left-2/4 z-50 font-bold text-4xl opacity-75 text-blue-500'>+</span>
-      {props.children}
+      ref={ref}
+      style={{
+        position: 'relative',
+        width: ' 100%',
+        height: '100%',
+        overflow: 'auto',
+        touchAction: 'auto',
+      }}
+    >
+      {children}
+      <Scene
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          pointerEvents: 'none',
+        }}
+        eventSource={ref}
+        eventPrefix='client'
+      />
     </div>
-  );
-})
+  )
+}
 
-Layout.displayName = 'Layout';
-
-export default Layout;
+export { Layout }
